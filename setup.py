@@ -23,25 +23,20 @@ def find_version(*file_paths):
 with open('requirements.txt') as f:
     install_requires = f.read().splitlines()
 
-with open('./test-requirements.txt') as test_reqs_txt:
-    test_requirements = [line for line in test_reqs_txt]
-
 setup(
-    name='dockercloud-haproxy',
-    version=find_version('haproxy', '__init__.py'),
+    name='dockercloud-workerlistgen',
+    version=find_version('workerlistgen', '__init__.py'),
     packages=find_packages(),
     install_requires=install_requires,
-    tests_require=test_requirements,
     entry_points={
         'console_scripts':
-            ['dockercloud-haproxy = haproxy.main:main']
+            ['dockercloud-workerlistgen = workerlistgen.main:main']
     },
     include_package_data=True,
     author='Docker, Inc.',
     author_email='info@docker.com',
-    description='Auto self-configured haproxy on Docker Cloud',
+    description='Auto self-configured workerlistgen on Docker Cloud',
     license='Apache v2',
-    keywords='docker cloud haproxy',
+    keywords='docker cloud workerlistgen',
     url='http://cloud.docker.com/',
-    test_suite='tests',
 )

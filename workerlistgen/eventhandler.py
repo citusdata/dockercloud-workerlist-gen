@@ -2,15 +2,15 @@ import logging
 import json
 
 import config
-from haproxycfg import run_haproxy, Haproxy
+from workerlistgencfg import run_workerlistgen, WorkerlistGen
 from utils import get_uuid_from_resource_uri
 
-logger = logging.getLogger("haproxy")
+logger = logging.getLogger("workerlistgen")
 
 
 def on_cloud_event(message):
     logger.debug(message)
-    logger.debug(Haproxy.cls_linked_services)
+    logger.debug(WorkerlistGen.linked_names)
     try:
         event = json.loads(message)
     except ValueError:
@@ -19,20 +19,19 @@ def on_cloud_event(message):
 
     # When service scale up/down or container start/stop/terminate/redeploy, reload the service
     if event.get("state", "") not in ["In progress", "Pending", "Terminating", "Starting", "Scaling", "Stopping"] and \
-                    event.get("type", "").lower() in ["container", "service"] and \
-                    len(set(Haproxy.cls_linked_services).intersection(set(event.get("parents", [])))) > 0:
+                    event.get("type", "").lower() in ["container", "service"]:
         msg = "Event: %s %s is %s" % (
             event["type"], get_uuid_from_resource_uri(event.get("resource_uri", "")), event["state"].lower())
-        run_haproxy(msg)
+        run_workerlistgen(msg)
 
-    # Add/remove services linked to haproxy
-    if event.get("state", "") == "Success" and config.HAPROXY_SERVICE_URI in event.get("parents", []):
-        run_haproxy("Event: New action is executed on the Haproxy container")
+    # Add/remove services linked to workerlistgen
+    if event.get("state", "") == "Success" and config.WORKERLISTGEN_SERVICE_URI in event.get("parents", []):
+        run_workerlistgen("Event: New action is executed on the WorkerlistGen container")
 
 
 def on_websocket_open():
-    Haproxy.LINKED_CONTAINER_CACHE.clear()
-    run_haproxy("Websocket open")
+    WorkerlistGen.linked_names = []
+    run_workerlistgen("Websocket open")
 
 
 def on_websocket_close():
@@ -40,4 +39,4 @@ def on_websocket_close():
 
 
 def on_user_reload(signum, frame):
-    run_haproxy("User reload")
+    run_workerlistgen("User reload")
