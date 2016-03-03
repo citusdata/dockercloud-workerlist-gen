@@ -27,12 +27,12 @@ docker run citusdata/dockercloud-workerlist-gen
 
 # Traceback (most recent call last):
 #   File "/usr/local/bin/dockercloud-workerlistgen", line 9, in <module>
-#     load_entry_point('dockercloud-workerlistgen==0.9', 'console_scripts', 'dockercloud-workerlistgen')()
+#     load_entry_point('dockercloud-workerlistgen==0.9.0', 'console_scripts', 'dockercloud-workerlistgen')()
 #   File "/usr/local/lib/python2.7/dist-packages/workerlistgen/main.py", line 61, in main
 #     autoreload = set_autoreload(WORKERLISTGEN_CONTAINER_URI, WORKERLISTGEN_SERVICE_URI, API_AUTH)
 #   File "/usr/local/lib/python2.7/dist-packages/workerlistgen/main.py", line 41, in set_autoreload
 #     raise RuntimeError(msg)
-# RuntimeError: dockercloud/workerlistgen 0.9 is not running in Docker Cloud
+# RuntimeError: dockercloud/workerlistgen 0.9.0 is not running in Docker Cloud
 ```
 
 The better place to deploy this would be in a Docker Cloud stack. This image needs links to the workers it should be monitoring, as well as the `global` role, to ensure it can access the Docker Cloud API. The master and worker services should be deployed to nodes with those tags (master or worker), and the config container should be deployed alongside the master service (using master tags).
